@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <style>
+        :root {
+            --pink-bg: #ffc0cb;
+            --dark-pink: #ff69b4;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--pink-bg);
+            overflow-x: hidden;
+            color: #333;
+        }
+
+        /* Section Handling */
+        section {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        section.active {
+            display: flex;
+        }
+
+        /* Falling Emojis Container */
+        #emoji-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .emoji {
+            position: absolute;
+            top: -50px;
+            font-size: 2rem;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* Timer Styling */
+        #timer {
+            position: fixed;
+            top: 10px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: var(--dark-pink);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover { transform: scale(1.1); }
+
+        /* Scrolling Content */
+        .scrolling-content {
+            max-width: 600px;
+            margin-top: 80px;
+        }
+
+        .para-card {
+            margin-bottom: 300px; /* Big gap between paras */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* Virtual Cake */
+        .cake-container {
+            font-size: 5rem;
+            position: relative;
+        }
+
+        .flame {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            animation: flicker 0.1s infinite alternate;
+        }
+
+        @keyframes flicker {
+            from { opacity: 0.8; transform: translateX(-50%) scale(1); }
+            to { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="emoji-container"></div>
+    <div id="timer" class="hidden">Calculating life...</div>
+
+    <section id="page1" class="active">
+        <h1>A Special Surprise</h1>
+        <p>I have something to show you. Are you ready to see how far you've come?</p>
+        <button class="btn" onclick="startExperience()">Click Here</button>
+    </section>
+
+    <section id="page2">
+        <div class="scrolling-content" id="scroll-box">
+            <div class="para-card">Every second is a gift...</div>
+            <div class="para-card">You have grown so much since 2008.</div>
+            <div class="para-card">You make the world brighter just by being in it.</div>
+            <div class="para-card">Scroll down to see your cake!</div>
+            
+            <div id="cake-section">
+                <h2 id="blow-text">Blow in 3... 2... 1...</h2>
+                <div class="cake-container">
+                    <div id="flame" class="flame">🔥</div>
+                    🎂
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="page3">
+        <h1>Memories & Wishes</h1>
+        <p>You are incredible! Keep shining.</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <img src="https://via.placeholder.com/150" alt="Memory 1">
+            <img src="https://via.placeholder.com/150" alt="Memory 2">
+        </div>
+        <p>Wishing you the best year yet!</p>
+    </section>
+
+    <script>
+        const birthDate = new Date('August 14, 2008 00:00:00');
+        const emojis = ['🎉', '🎊', '🎂'];
+
+        // --- Falling Emojis Logic ---
+        function createEmoji() {
+            const container = document.getElementById('emoji-container');
+            const el = document.createElement('div');
+            el.className = 'emoji';
+            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 5000);
+        }
+
+        // --- Life Timer Logic ---
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - birthDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((diff / 1000 / 60) % 60);
+            const secs = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('timer').innerText = 
+                `You've been alive for: ${days}d ${hours}h ${mins}m ${secs}s`;
+        }
+
+        // --- Navigation & Auto-Scroll ---
+        function startExperience() {
+            document.getElementById('page1').classList.remove('active');
+            document.getElementById('page2').classList.add('active');
+            document.getElementById('timer').classList.remove('hidden');
+            
+            setInterval(createEmoji, 300);
+            setInterval(updateTimer, 1000);
+
+            // Auto-scroll logic
+            let scrollInterval = setInterval(() => {
+                window.scrollBy(0, 2); 
+                // Stop scrolling once we reach the cake
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                    clearInterval(scrollInterval);
+                    handleCake();
+                }
+            }, 30);
+        }
+
+        // --- Cake Logic ---
+        function handleCake() {
+            let countdown = 3;
+            const text = document.getElementById('blow-text');
+            
+            const timer = setInterval(() => {
+                countdown--;
+                if(countdown > 0) {
+                    text.innerText = `Blow in ${countdown}...`;
+                } else {
+                    text.innerText = "POOF!";
+                    document.getElementById('flame').classList.add('hidden');
+                    clearInterval(timer);
+                    
+                    // Move to final page after 2 seconds
+                    setTimeout(() => {
+                        document.getElementById('page2').classList.remove('active');
+                        document.getElementById('page3').classList.add('active');
+                        window.scrollTo(0,0);
+                    }, 2000);
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+  </html>
